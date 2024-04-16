@@ -171,3 +171,8 @@ Installation
         -> cd $REST_HOME/rest/examples/H2/X3LYP
         -> $REST_FORTRAN_COMPILER/target/debug/rest
 
+* To use REST as a module in the python environment::
+
+    1) cargo build [--release]
+    2) cp target debug/[release]/libpyrest.so $pyfolder/pyrest.so
+    3) import pyrest as a standard python module
