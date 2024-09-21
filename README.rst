@@ -6,8 +6,9 @@ Installation
       =========================================================
       -> git clone https://github.com/igor-1982/rest_workspace.git
       -> cd rest_workspace
-      -> mkdir lib
+      -> mkdir lib include
       -> export REST_EXT_DIR="$(pwd)/lib"
+      -> export REST_EXT_INC="$(pwd)/include"
       =========================================================
    - install RUST 
       =========================================================
@@ -44,7 +45,7 @@ Installation
          whatis("Keywords: rust 1.74.0")
          whatis("Description: A shell environment.")
 
-         family("rsut")
+         family("rust")
 
          local prefix="/path/to/your/custom/location"
          setenv("RUSTUP_HOME", prefix .. "/rustup")
@@ -78,8 +79,9 @@ Installation
      =========================================================
      -> git clone https://github.com/xianyi/OpenBLAS.git OpenBLAS
      -> cd OpenBLAS
-     -> make -jN
+     -> make -jN DYNAMIC_ARCH=1
         The variable "N" represents a integer value that indicates the number of CPUs you wish to use for the compilation process.
+        DYNAMIC_ARCH=1 is needed for the use of dftd, also make it compatible with various situations.
      -> cp libopenblas.so $REST_EXT_DIR/libopenblas.so
      =========================================================
    - libcint.so
@@ -129,9 +131,34 @@ Installation
      -> make rest2fch -f Makefile.gnu_openblas
      -> cp MOKIT/mokit/lib/librest2fch.so $REST_EXT_DIR/
      =========================================================
+   - libs-dftd3.so
+     =========================================================
+     -> git clone https://github.com/dftd3/simple-dftd3.git
+         Also, you can compile the DFTD3 library using the way in this repository. Here we show the cmake way. 
+         Aside from cmake, you also need a ninja build system. Get it from https://ninja-build.org/ or install it via your package manager.
+     -> cd simple-dftd3
+     -> cmake -B build -G Ninja -DBUILD_SHARED_LIBS=1
+     -> cmake --build build
+     -> cp build/libs-dftd3.so.* $REST_EXT_DIR/
+     -> mkdir -f $REST_EXT_INC/dftd3
+     -> find build -name *.mod | xargs -I {} cp {} $REST_EXT_INC/dftd3
+      This step is rather important to finish building the system. 
+      Wherever your $REST_EXT_INC is, you should always put your mods in the dftd3 directory.
+       =========================================================
+   - libdftd4.so
+       =========================================================
+       -> git clone https://github.com/dftd4/dftd4.git
+         The process is very similiar to the build of libs-dftd3.
+         Similiarly, you can compile the DFTD4 library using the way in this repository. Here we show the cmake way.
+       -> cd dftd4
+       -> cmake -B build -G Ninja -DBUILD_SHARED_LIBS=1
+       -> cmake --build build
+       -> mkdir -f $REST_EXT_INC/dftd4
+       -> cp build/libdftd4.so.* $REST_EXT_DIR/
+       -> find build -name *.mod | xargs -I {} cp {} $REST_EXT_INC/dftd4
+         =========================================================
 
-
-* Build REST::
+* Build REST
 
    1) cp Config.templet Config
    2) edit "Config" to make the prerequisite libraries aforementioned accessable 
@@ -171,7 +198,7 @@ Installation
         -> cd $REST_HOME/rest/examples/H2/X3LYP
         -> $REST_FORTRAN_COMPILER/target/debug/rest
 
-* To use REST as a module in the python environment::
+* To use REST as a module in the python environment
 
     1) cargo build [--release]
     2) cp target debug/[release]/libpyrest.so $pyfolder/pyrest.so

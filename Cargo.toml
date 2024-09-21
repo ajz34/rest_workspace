@@ -2,9 +2,12 @@
 resolver = "2"
 
 members = [
-    "rest",
     "rest_tensors",
-    "rest_libcint"
+    "rest_libcint",
+    "rest",
+    #"utilities/similarity_check", 
+    "utilities/rest_regression", 
+    #"utilities/trajectory_analysis"
 ]
 
 [profile.release]

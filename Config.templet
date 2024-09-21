@@ -8,11 +8,13 @@
 REST_FORTRAN_COMPILER="gfortran"
 #1): REST_CINT_DIR: the path to libcint.so
 REST_CINT_DIR="path_to_libcint.so"
-#2): REST_BLAS_DIR: the path to libopenblas.so
+#2) the path to access the fortrain file
+REST_EXT_DIR='/home/igor/.cargo/external_libs'
+#3): REST_BLAS_DIR: the path to libopenblas.so
 REST_BLAS_DIR="path_to_libopenblas.so"
-#3): REST_HDF5_DIR: the path to libhdf5.so
+#4): REST_HDF5_DIR: the path to libhdf5.so
 REST_HDF5_DIR="path_to_libhdf5.so"
-#4): the path to libxc.so
+#5): the path to libxc.so
 REST_XC_DIR="path_to_libxc.so"
 
 #==================================================================
@@ -29,7 +31,7 @@ active="y"
 #==================================================================
 # parse the input arguements
 #==================================================================
-while getopts hr:p:e option
+while getopts r:p:e:h option
 do
   case "${option}"
     in
@@ -64,7 +66,7 @@ do
       echo "          userid_@local_server:/path-to-the-repositories/rest_tensors.mirror"
       echo "          userid_@local_server:/path-to-the-repositories/rest_libcints.mirror"
       echo ""
-      echo " Enjoy the electronic-structure simulation using the REST package"
+      echo " Enjoy the electronic-structure calculations using the REST package!"
       echo ""
       exit
       ;;
