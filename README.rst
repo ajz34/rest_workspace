@@ -138,7 +138,7 @@ Installation
          Also, you can compile the DFTD3 library using the way in this repository. Here we show the cmake way. 
          Aside from cmake (version 3.14 or newer), you also need a ninja build system (version 1.10 or newer). 
          Get it from https://ninja-build.org/ or install it via your package manager.
-         NOTE:: if there is no cmake with proper version installed in you OS, you can try the build systems of meson or fpm.
+         NOTE:: if no cmake with proper version installed in your OS, try other build systems, e.g. meson or fpm.
          More details can be found on https://github.com/dftd3/simple-dftd3
      -> cd simple-dftd3
      -> cmake -B build -G Ninja -DBUILD_SHARED_LIBS=1
@@ -152,16 +152,16 @@ Installation
    - libdftd4.so
      ===========================================================
        -> git clone https://github.com/dftd4/dftd4.git
-         The process is very similiar to the build of libs-dftd3.
-         Similiarly, you can compile the DFTD4 library using the way in this repository. Here we show the cmake way.
+         The process is almost the same as the build of libs-dftd3.
+         Similiarly, you can compile the DFTD4 library using the cmake build system.
+         NOTE:: if no cmake with proper version installed in your OS, try other build systems, e.g. meson and fpm.
+         More details can be found on https://github.com/dftd4/dftd4
        -> cd dftd4
        -> cmake -B build -G Ninja -DBUILD_SHARED_LIBS=1
        -> cmake --build build
        -> mkdir -f $REST_EXT_INC/dftd4
        -> cp build/libdftd4.so.* $REST_EXT_DIR/
        -> find build -name *.mod | xargs -I {} cp {} $REST_EXT_INC/dftd4
-       NOTE:: if there is no cmake with proper version in you OS, you can try the buid systems of meson or fpm.
-       More details can be found on https://github.com/dftd4/dftd4
      ===========================================================
 
 * Build REST
