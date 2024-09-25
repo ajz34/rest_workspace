@@ -5,8 +5,8 @@ members = [
     "rest_tensors",
     "rest_libcint",
     "rest",
+    "rest_regression", 
     #"utilities/similarity_check", 
-    "utilities/rest_regression", 
     #"utilities/trajectory_analysis"
 ]
 

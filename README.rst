@@ -101,23 +101,24 @@ Installation
      -> tar xf libxc-*
      -> cd libxc-*
      -> ./configure --prefix=$(pwd) --enable-shared
-          `--enable-shared` is needed for getting the libxc.so file, otherwise only libxc.a is made.
+          `--enable-shared` is needed to produce the share library "libxc.so", otherwise only libxc.a is generated.
      -> make -jN
         The variable "N" represents a integer value that indicates the number of CPUs you wish to use for the compilation process.
      -> make install
-     -> cp lib/libxc.so $REST_EXT_DIR/
+     -> cp lib/libxc.so $REST_EXT_DIR
      =========================================================
    - libhdf5.so
      =========================================================
-     -> download the source code from 
-          https://www.hdfgroup.org/downloads/hdf5
+     -> download the source code from https://www.hdfgroup.org/downloads/hdf5
           DO NOT DOWNLOAD the .zip file, if you are using a Linux system.
-          Please consider downloading version 1.8.x since REST calls the older version of HDF5 functions. The APIs of v1.14 only contain H5L_iterate, and REST calls the function H5Literate, resulting in an error "undefined reference to 'H5Literate'". Although the latest HDF5 offers the 1.8 APIs, specify --with-default-api-version=v18 when building. However, please note that this flag may not be effective in practice.
+          Please consider downloading version 1.8.x since REST calls the older version of HDF5 functions. 
+          The APIs of v1.14 only contain H5L_iterate, and REST calls the function H5Literate, resulting in an error "undefined reference to 'H5Literate'". 
+          Although the latest HDF5 offers the 1.8 APIs, specify --with-default-api-version=v18 when building. However, please note that this flag may not be effective in practice.
           You can run `nm -D lib/libhdf5.so | grep H5Literate` after making hdf5 compilation to check the function existance.
      -> tar -zcvf hdf5-*.tar.gz
      -> cd hdf5-*
      -> ./configure --prefix=$(pwd) 
-     -> CC=your mpicc path/mpicc ./configure --with-default-api-version=v18 --enable-parallel  --prefix=$(pwd) 
+     -> CC=`your mpicc path/mpicc` ./configure --with-default-api-version=v18 --enable-parallel  --prefix=$(pwd) 
         [optional] use of parallel HDF5.
      -> make -jN
         The variable "N" represents a integer value that indicates the number of CPUs you wish to use for the compilation process.
@@ -135,18 +136,21 @@ Installation
      =========================================================
      -> git clone https://github.com/dftd3/simple-dftd3.git
          Also, you can compile the DFTD3 library using the way in this repository. Here we show the cmake way. 
-         Aside from cmake, you also need a ninja build system. Get it from https://ninja-build.org/ or install it via your package manager.
+         Aside from cmake (version 3.14 or newer), you also need a ninja build system (version 1.10 or newer). 
+         Get it from https://ninja-build.org/ or install it via your package manager.
+         NOTE:: if there is no cmake with proper version installed in you OS, you can try the build systems of meson or fpm.
+         More details can be found on https://github.com/dftd3/simple-dftd3
      -> cd simple-dftd3
      -> cmake -B build -G Ninja -DBUILD_SHARED_LIBS=1
      -> cmake --build build
      -> cp build/libs-dftd3.so.* $REST_EXT_DIR/
      -> mkdir -f $REST_EXT_INC/dftd3
      -> find build -name *.mod | xargs -I {} cp {} $REST_EXT_INC/dftd3
-      This step is rather important to finish building the system. 
-      Wherever your $REST_EXT_INC is, you should always put your mods in the dftd3 directory.
-       =========================================================
+         This step is rather important to finish building the system. 
+         Wherever your $REST_EXT_INC is, you should always put your mods in the dftd3 directory.
+     ===========================================================
    - libdftd4.so
-       =========================================================
+     ===========================================================
        -> git clone https://github.com/dftd4/dftd4.git
          The process is very similiar to the build of libs-dftd3.
          Similiarly, you can compile the DFTD4 library using the way in this repository. Here we show the cmake way.
@@ -156,47 +160,43 @@ Installation
        -> mkdir -f $REST_EXT_INC/dftd4
        -> cp build/libdftd4.so.* $REST_EXT_DIR/
        -> find build -name *.mod | xargs -I {} cp {} $REST_EXT_INC/dftd4
-         =========================================================
+       NOTE:: if there is no cmake with proper version in you OS, you can try the buid systems of meson or fpm.
+       More details can be found on https://github.com/dftd4/dftd4
+     ===========================================================
 
 * Build REST
 
-   1) cp Config.templet Config
-   2) edit "Config" to make the prerequisite libraries aforementioned accessable 
-      via some global variables heading with "REST". Please refer to the Config.templet 
-      file for more details.
-   3) bash Config
-   4) Source $HOME/.bash_profile
-   5-1) cargo build           (debug version: compile fast and run slowly)
-   5-2) cargo build --release (release version: compile slowly and run fast)
-   6) check installation
-   6-1) check executable file generated
-        -> cd target/release # for cargo build --release
-        -> cd target/release # for cargo build
-        -> ls rest
-   6-2) check all `lib` files is linked
-        -> ldd target/debug/rest
-            linux-vdso.so.1 =>  (0x00002b4cdde45000)
+   1) -> ./Config [OPTION...] [OPTARG]
+        a) prepare the relevant global environment variables heading with "REST", including:
+           "REST_HOME", "REST_EXT_DIR", "REST_EXT_INC", and "REST_FORTRAN_COMPILER" 
+        b) download the required sub-projects: "rest", "rest_tensors", "rest_libcint", "rest_regression"
+           from either github or local repository
+        For more details, please use the help option:
+        -> ./Config -h
+   2) Source $HOME/.bash_profile
+   3) -> cargo build           (debug version: compile fast and run slowly)
+      or
+      -> cargo build --release (release version: compile slowly and run fast)
+   4) check installation
+      a) check executable file generated
+         -> cd $REST_HOME/target/release # for cargo build --release
+         -> cd $REST_HOME/target/debug   # for cargo build
+         -> ls rest
+      b) check all `lib` files are linked properly
+         -> ldd target/debug/rest
+            ...
             libxc.so.12 => /..your...rest...path/lib/libxc.so.12 (0x00002b4cdfa32000)
             librest2fch.so => /..your...rest...path/lib/librest2fch.so (0x00002b4cdde4a000)
-            libhdf5.so.10 => /..your...rest...path/lib/libhdf5.so.10 (0x00002b4ce0a33000)
-            libpthread.so.0 => /...system path.../libpthread.so.0 (0x00002b4ce0d34000)
             libcint.so.6 => /..your...rest...path/lib/libcint.so.6 (0x00002b4ce0f50000)
             librestmatr.so => /..your...rest...path/lib/librestmatr.so (0x00002b4cdde9b000)
-            libopenblas.so.0 => /..your...rest...path/lib/libopenblas.so.0 (0x00002b4ce1171000)
-            libgcc_s.so.1 => /...system path.../libgcc_s.so.1 (0x00002b4ce1f1b000)
-            librt.so.1 => /...system path.../librt.so.1 (0x00002b4ce2131000)
-            libm.so.6 => /...system path.../libm.so.6 (0x00002b4ce2339000)
-            libdl.so.2 => /...system path.../libdl.so.2 (0x00002b4ce263b000)
             libc.so.6 => /...system path.../libc.so.6 (0x00002b4ce283f000)
-            /...system path.../ld-linux-x86-64.so.2 (0x00002b4cdde23000)
             libgfortran.so.5 => /...system path.../libgfortran.so.5 (0x00002b4ce2c0d000)
             libquadmath.so.0 => /...system path.../libquadmath.so.0 (0x00002b4ce3085000)
-            libz.so.1 => /...system path.../libz.so.1 (0x00002b4ce32c1000)
-            libmpifort.so.12 => /...your mpicc path.../lib/libmpifort.so.12 (0x00002b4ce34d7000)
-            libmpi.so.12 => /...your mpicc path.../lib/release/libmpi.so.12 (0x00002b4ce388b000)  
-    6-3) run a test
-        -> cd $REST_HOME/rest/examples/H2/X3LYP
-        -> $REST_FORTRAN_COMPILER/target/debug/rest
+            ...
+      c) run a regression test with `rest` 
+         -> $REST_HOME/target/debug/rest_regression -p $REST_HOME/target/release/rest
+         for more details about `rest_regression`, please type:
+         -> $REST_HOME/target/debug/rest_regression -h
 
 * To use REST as a module in the python environment
 
