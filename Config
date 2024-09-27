@@ -1,29 +1,29 @@
 #!/usr/bin/env bash
 
 #==================================================================
-# 0): Some prerequisite libraries for REST, which should be installed 
-#     and accessable when compling and excuting the REST package. 
-#     Details could be found in README.rst
+# 0): Prerequisite libraries for REST: 
+#   - These libraries must be installed and accessable during
+#     compilation and excution of the REST package. 
+#   - For Detailed information, refer to the `README.rst` file
 #==================================================================
-# 1): set the current folder (REST_HOME)
+# 1): set the current folder as REST_HOME
 #==================================================================
 REST_HOME=`pwd`
 REST_EXT_DIR=$REST_HOME/lib
 [ ! -d $REST_EXT_DIR ] && mkdir -p $REST_EXT_DIR
 REST_EXT_INC=$REST_HOME/include
 [ ! -d $REST_EXT_INC ] && mkdir -p $REST_EXT_INC
+REST_CINT_DIR=$REST_EXT_DIR
+REST_BLAS_DIR=$REST_EXT_DIR
 
+#==================================================================
+# parse the input arguements and initialize some parameters
+#==================================================================
 repository="github"
 local_path=""
 active="y"
 REST_FORTRAN_COMPILER="gfortran"
-#==================================================================
-# 1): REST_FORTRAN_COMPILER: you need a compiler for the Fortran code
-#     gfortran, ifort, and so forth
-#==================================================================
-# parse the input arguements
-#==================================================================
-while getopts r:p:e:f:h option
+while getopts r:p:ef:h option
 do
   case "${option}"
     in
@@ -61,7 +61,13 @@ do
       echo "          userid_@local_server:/path-to-the-repositories/rest_libcints.mirror"
       echo "          userid_@local_server:/path-to-the-repositories/rest_regression.mirror"
       echo ""
-      echo " Enjoy the electronic-structure calculations using the REST package!"
+      echo "================================  IMPORTANT ISSUE   =================================================="
+      echo "! External libraries for REST:"
+      echo "!  - These libraries are required and should be placed in the `$REST_EXT_DIR` directory."
+      echo "!  - For detailed information about the required libraries, please refer to the `README.rts` file."
+      echo "======================================================================================================"
+      echo ""
+      echo "Enjoy the electronic-structure calculations using the REST package!"
       echo ""
       exit
       ;;
@@ -103,7 +109,6 @@ if [ -f rest/basis_sets-json.tar.bz2 ]; then
   mv basis_sets-json.tar.bz2 rest/bse_pool
 fi
 
-
 if ! command -v $REST_FORTRAN_COMPILER &> /dev/null
 then
   echo "The fortran compiler $REST_FORTRAN_COMPILER could not be found. Please use an available fortran compiler"
@@ -112,9 +117,9 @@ else
   echo "The fortran compiler $REST_FORTRAN_COMPILER is available"
 fi
 
-#=======================================================================
-# Append the setting of global enviroment variables to the bash_profile
-#=======================================================================
+#============================================================================
+# Appending the environment variables to `$HOME/.bash_profile`
+#============================================================================
 if [ $active = "y" ]; then
   if [ ! -f $HOME/.bash_profile ]; then 
     echo 'export REST_FORTRAN_COMPILER="'$REST_FORTRAN_COMPILER'"' > $HOME/.bash_profile
@@ -123,33 +128,32 @@ if [ $active = "y" ]; then
   fi
   echo 'export REST_HOME="'$REST_HOME'"' >> $HOME/.bash_profile
   echo 'export REST_EXT_DIR="'$REST_EXT_DIR'"' >> $HOME/.bash_profile
+  echo 'export REST_EXT_INC="'$REST_EXT_INC'"' >> $HOME/.bash_profile
   echo 'export REST_CINT_DIR="'$REST_CINT_DIR'"' >> $HOME/.bash_profile
-  echo 'export REST_BLAS_DIR="'$REST_BLAS_DIR'"' >> $HOME/.bash_profile
-  echo 'export REST_HDF5_DIR="'$REST_HDF5_DIR'"' >> $HOME/.bash_profile
-  echo 'export REST_XC_DIR="'$REST_XC_DIR'"' >> $HOME/.bash_profile
-  echo 'export LD_LIBRARY_PATH="'$REST_XC_DIR:$REST_EXT_DIR:$REST_CINT_DIR:$REST_BLAS_DIR:$REST_HDF5_DIR:'$LD_LIBRARY_PATH"' >> $HOME/.bash_profile
-  echo "! After running 'source \$HOME/.bash_profile', please execute the following commands in your terminal..."
+  echo 'export LD_LIBRARY_PATH="$REST_EXT_DIR:$LD_LIBRARY_PATH"' >> $HOME/.bash_profile
+  echo "! Environment variables have been appended to $HOME/.bash_profile"
+  echo "! Activating them by running 'source \$HOME/.bash_profile'"
 else
   echo "! Note: Please activate the following environments manually..."
   echo "-----------------------------------"
   echo 'REST_FORTRAN_COMPILER="'$REST_FORTRAN_COMPILER'"'
   echo 'REST_HOME="'$REST_HOME'"' 
   echo 'REST_EXT_DIR="'$REST_EXT_DIR'"' 
+  echo 'REST_EXT_INC="'$REST_EXT_INC'"' 
   echo 'REST_CINT_DIR="'$REST_CINT_DIR'"' 
-  echo 'REST_BLAS_DIR="'$REST_BLAS_DIR'"' 
-  echo 'REST_HDF5_DIR="'$REST_HDF5_DIR'"' 
-  echo 'REST_XC_DIR="'$REST_XC_DIR'"'
-  echo 'LD_LIBRARY_PATH="'$REST_XC_DIR:$REST_EXT_DIR:$REST_CINT_DIR:$REST_BLAS_DIR:$REST_HDF5_DIR:'$LD_LIBRARY_PATH"' 
-  echo "! Note: After activating enviroments, please run the following commands in your terminal..."
+  echo 'LD_LIBRARY_PATH="$REST_EXT_DIR:$LD_LIBRARY_PATH"' 
+  echo "-----------------------------------"
 fi
-echo "-----------------------------------"
-echo 'export RUSTDOCFLAGS="--html-in-header $REST_HOME/rest/katex.html"'
-echo 'export RUSTFLAGS="-L $REST_XC_DIR -lxc -L $REST_EXT_DIR -lrest2fch -C target-cpu=native"'
+
+echo "================================  IMPORTANT ISSUE   =================================================="
+echo "! External libraries for REST:"
+echo "!  - These libraries are required and should be placed in the `$REST_EXT_DIR` directory."
+echo "!  - For detailed information about the required libraries, please refer to the `README.rts` file."
+echo "======================================================================================================"
 
 
-#echo 'export HDF5_DIR="'$libhdf5_path'"' >> $HOME/.bash_profile
-## make sure gcc with correct version is loaded properly
-#gcc_path='/share/apps/GCC/gcc8'
-#echo 'export PATH="'$gcc_path'/bin:$PATH"' >> $HOME/.bash_profile
-#echo 'export LD_LIBRARY_PATH="'$gcc_path'/lib:'$gcc_path'/lib64:$LD_LIBRARY_PATH"' >> $HOME/.bash_profile
-#echo '#alias cc='$gcc_path'/gcc' >> $HOME/.bash_profile
+#echo "! After running 'source \$HOME/.bash_profile', please execute the following commands in your terminal..."
+#echo "! Note: After activating enviroments, please run the following commands in your terminal..."
+#echo 'export RUSTDOCFLAGS="--html-in-header $REST_HOME/rest/katex.html"'
+#echo 'export RUSTFLAGS="-L $REST_XC_DIR -lxc -L $REST_EXT_DIR -lrest2fch -C target-cpu=native"'
+

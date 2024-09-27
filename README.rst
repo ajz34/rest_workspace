@@ -1,6 +1,5 @@
 Installation
 ------------------
-
 * Preparation
    - download this repository
       =========================================================
@@ -75,6 +74,12 @@ Installation
       =========================================================
 
 * Prerequisites
+   - libopenssl.so/libssl.so/libcrypto.so
+     =========================================================
+     -> yum install openssl
+        install openssl using the package manager,
+        for example yum for CentOS, apt for Ubuntu
+     =========================================================
    - libopenblas.so
      =========================================================
      -> git clone https://github.com/xianyi/OpenBLAS.git OpenBLAS
@@ -82,7 +87,7 @@ Installation
      -> make -jN DYNAMIC_ARCH=1
         The variable "N" represents a integer value that indicates the number of CPUs you wish to use for the compilation process.
         DYNAMIC_ARCH=1 is needed for the use of dftd, also make it compatible with various situations.
-     -> cp libopenblas.so $REST_EXT_DIR/libopenblas.so
+     -> cp libopenblas.so* $REST_EXT_DIR/libopenblas.so*
      =========================================================
    - libcint.so
      =========================================================
@@ -92,7 +97,7 @@ Installation
      -> cmake -DWITH_RANGE_COULOMB=1 ..
      -> make -jN
         The variable "N" represents a integer value that indicates the number of CPUs you wish to use for the compilation process.
-     -> cp libcint.so $REST_EXT_DIR/libcint.so
+     -> cp libcint.so* $REST_EXT_DIR/
      =========================================================
    - libxc.so
      =========================================================
@@ -105,7 +110,7 @@ Installation
      -> make -jN
         The variable "N" represents a integer value that indicates the number of CPUs you wish to use for the compilation process.
      -> make install
-     -> cp lib/libxc.so $REST_EXT_DIR
+     -> cp lib/libxc.so* $REST_EXT_DIR
      =========================================================
    - libhdf5.so
      =========================================================
@@ -123,7 +128,7 @@ Installation
      -> make -jN
         The variable "N" represents a integer value that indicates the number of CPUs you wish to use for the compilation process.
      -> make -jN install
-     -> cp lib/libhdf5.so $REST_EXT_DIR/
+     -> cp lib/libhdf5.so* $REST_EXT_DIR/
      =========================================================
    - librest2fch.so
      =========================================================
