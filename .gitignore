@@ -11,3 +11,5 @@ rest/
 rest_tensors/
 rest_libcint/
 rest_regression/
+lib/
+include/
