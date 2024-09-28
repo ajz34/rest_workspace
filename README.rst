@@ -111,6 +111,7 @@ Installation
         The variable "N" represents a integer value that indicates the number of CPUs you wish to use for the compilation process.
      -> make install
      -> cp lib/libxc.so* $REST_EXT_DIR
+     -> cp lib/libxc.a  $REST_EXT_DIR
      =========================================================
    - libhdf5.so
      =========================================================
@@ -129,6 +130,7 @@ Installation
         The variable "N" represents a integer value that indicates the number of CPUs you wish to use for the compilation process.
      -> make -jN install
      -> cp lib/libhdf5.so* $REST_EXT_DIR/
+     -> cp include/* $REST_EXT_INC/
      =========================================================
    - librest2fch.so
      =========================================================
